@@ -108,10 +108,11 @@ class ProcessRuntime(private val context: Context) : Runtime(context) {
 
         val requestedLimit = prefs.patcherProcessMemoryLimit.get()
         val aggressiveLimit = prefs.patcherProcessMemoryAggressive.get()
-        val runtimeLimit = MemoryLimitConfig.clampLimitMb(
-            context,
-            if (aggressiveLimit) MemoryLimitConfig.maxLimitMb(context) else requestedLimit
-        )
+        val runtimeLimit = if (aggressiveLimit) {
+            MemoryLimitConfig.maxLimitMb(context)
+        } else {
+            requestedLimit
+        }
         val limit = "${runtimeLimit}M"
         val usePropOverride = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
         val propOverride = if (usePropOverride) {

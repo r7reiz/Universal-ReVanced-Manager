@@ -613,14 +613,11 @@ class PatcherWorker(
             val memoryOverrideActive = useProcessRuntime && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
             val requestedLimit = prefs.patcherProcessMemoryLimit.get()
             val aggressiveLimit = prefs.patcherProcessMemoryAggressive.get()
-            val effectiveLimit = MemoryLimitConfig.clampLimitMb(
-                applicationContext,
-                if (aggressiveLimit) {
-                    MemoryLimitConfig.maxLimitMb(applicationContext)
-                } else {
-                    requestedLimit
-                }
-            )
+            val effectiveLimit = if (aggressiveLimit) {
+                MemoryLimitConfig.maxLimitMb(applicationContext)
+            } else {
+                requestedLimit
+            }
 
             args.logger.info(
                 "Patching started at ${System.currentTimeMillis()} " +
